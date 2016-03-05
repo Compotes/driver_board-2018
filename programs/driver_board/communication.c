@@ -48,7 +48,6 @@ THD_FUNCTION(SerialThread, msgThread) {
 
     while (1) {
         received_char = sdGet(&SD1);
-
         if ((received_char >> 7) & 1) {
             if ((received_char >> 6) & 1) {
                 quantity_of_slaves = (received_char + my_address) & ~0xC0;
