@@ -4,8 +4,17 @@
 #include "communication.h"
 #include "motor.h"
 
+<<<<<<< HEAD
 /*thread_t *commanderp;
 
+=======
+#define MISTAKE 0
+
+#define UNUSED(arg) (void)(arg)
+
+thread_t *commanderp;
+thread_t *motorp;
+>>>>>>> 35332c5802f1ee8be6816247d7e9dd8f43e2613f
 
 void execute_master_command(uint16_t command_id, uint8_t *buff) {
     uint8_t j;
@@ -28,7 +37,11 @@ void execute_master_command(uint16_t command_id, uint8_t *buff) {
 
             chMsgSend(motorp, motor_speed);
 
+<<<<<<< HEAD
         default:
+=======
+        default:    
+>>>>>>> 35332c5802f1ee8be6816247d7e9dd8f43e2613f
             break;
     }
 
@@ -82,7 +95,11 @@ THD_FUNCTION(CommanderThread, arg) {
     chThdSleepMilliseconds(100);
 }*/
 
+<<<<<<< HEAD
 int main(void) {
+=======
+int main(void) {    
+>>>>>>> 35332c5802f1ee8be6816247d7e9dd8f43e2613f
     halInit();
     chSysInit();
 
@@ -91,17 +108,28 @@ int main(void) {
      */
 
     communication_init();
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> 35332c5802f1ee8be6816247d7e9dd8f43e2613f
     /*
      * Threads setup
      */
 
+<<<<<<< HEAD
     //commanderp = chThdCreateStatic(waCommanderThread, sizeof(waCommanderThread),
     //                               NORMALPRIO, CommanderThread, NULL);
 
     communication_thread();
+=======
+    commanderp = chThdCreateStatic(waCommanderThread, sizeof(waCommanderThread),
+                                   NORMALPRIO, CommanderThread, NULL);
+>>>>>>> 35332c5802f1ee8be6816247d7e9dd8f43e2613f
 
     motor_thread_init();
+
+    motorp = motor_thread_init();
 
     while (1) {
         chThdSleepMilliseconds(100);

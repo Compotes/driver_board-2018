@@ -1,6 +1,15 @@
+<<<<<<< HEAD
 #include "motor.h"
 
 thread_t *motorp;
+=======
+#include "ch.h"
+#include "hal.h"
+
+#include "motor.h"
+
+#define MOTOR_PWM_CHANNEL 3
+>>>>>>> 35332c5802f1ee8be6816247d7e9dd8f43e2613f
 
 void motor_forward(void) {
     palSetPad(MOTOR_IN_GPIO, MOTOR_IN_1);
@@ -22,7 +31,11 @@ THD_FUNCTION(MotorThread, arg) {
     (void)arg;
 
     int16_t motor_speed = 0;
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> 35332c5802f1ee8be6816247d7e9dd8f43e2613f
     thread_t *masterp;
 
     chRegSetThreadName("motor");
@@ -60,7 +73,11 @@ static PWMConfig pwmcfg = {
     0
 };
 
+<<<<<<< HEAD
 void motor_thread_init(void) {
+=======
+thread_t * motor_thread_init(void) {
+>>>>>>> 35332c5802f1ee8be6816247d7e9dd8f43e2613f
     pwmInit();
     pwmStart(&PWMD3, &pwmcfg);
 
@@ -69,5 +86,9 @@ void motor_thread_init(void) {
 
     palSetPadMode(MOTOR_ENABLE_GPIO, MOTOR_ENABLE, PAL_MODE_ALTERNATE(1));
 
+<<<<<<< HEAD
     motorp = chThdCreateStatic(waMotorThread, sizeof(waMotorThread),NORMALPRIO, MotorThread, NULL);
+=======
+    return chThdCreateStatic(waMotorThread, sizeof(waMotorThread),NORMALPRIO, MotorThread, NULL);
+>>>>>>> 35332c5802f1ee8be6816247d7e9dd8f43e2613f
 }
