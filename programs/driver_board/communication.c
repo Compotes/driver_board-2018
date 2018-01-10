@@ -17,6 +17,7 @@ THD_FUNCTION(SerialThread, arg) {
 		sdPut (&SD1, received_command);
 	}
 
+
     while (1) {
 		while(received_command != MOVE_COMMAND_1){
 			received_command = sdGet (&SD1);
