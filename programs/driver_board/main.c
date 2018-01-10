@@ -1,32 +1,47 @@
 #include "ch.h"
 #include "hal.h"
 
-#include <icu_lld.h>
-#include "chprintf.h"
-#include <inttypes.h>
-
 #include "communication.h"
+#include "motor.h"
 
-#define MOTOR_PWM_CHANNEL 3
+<<<<<<< HEAD
+/*thread_t *commanderp;
+
+=======
+#define MISTAKE 0
 
 #define UNUSED(arg) (void)(arg)
 
 thread_t *commanderp;
-
-int16_t motor_speed = 0;
+thread_t *motorp;
+>>>>>>> 35332c5802f1ee8be6816247d7e9dd8f43e2613f
 
 void execute_master_command(uint16_t command_id, uint8_t *buff) {
+    uint8_t j;
+    int16_t motor_speed = 0;
     switch (command_id) {
-        case 0xAA:  
+        case 0xAA:
             led(GREEN, buff[0]);
             break;
 
         case 0xBB:
             // Motor movement command
-            motor_speed = (buff[1] * 1000 + buff[2] * 100 + buff[3] * 10 + buff[4]);
+            motor_speed = 0;
+            motor_speed |= buff[1];
+            motor_speed |= buff[2] << 4;
+            motor_speed |= buff[3] << 8;
+
+            if(motor_speed != 0) motor_speed += MISTAKE;
+
             if(buff[0] == 1) motor_speed *= -1;
 
+            chMsgSend(motorp, motor_speed);
+
+<<<<<<< HEAD
+        default:
+=======
         default:    
+>>>>>>> 35332c5802f1ee8be6816247d7e9dd8f43e2613f
             break;
     }
 
@@ -36,49 +51,15 @@ uint8_t *send_data_command(uint16_t command_id, uint8_t data_length, uint8_t *bu
     uint32_t values = 0;
     uint8_t i;
     switch (command_id) {
-        default:    
-            break;           
+        default:
+            break;
     }
     return buff;
 }
 
-void motor_forward(void) {
-    palSetPad(MOTOR_IN_GPIO, MOTOR_IN_1);
-    palClearPad(MOTOR_IN_GPIO, MOTOR_IN_2);
-}
-
-void motor_backward(void) {
-    palSetPad(MOTOR_IN_GPIO, MOTOR_IN_2);
-    palClearPad(MOTOR_IN_GPIO, MOTOR_IN_1);
-}
-
-void motor_stop(void) {
-    palClearPad(MOTOR_IN_GPIO, MOTOR_IN_1);
-    palClearPad(MOTOR_IN_GPIO, MOTOR_IN_2);
-}
-
-THD_WORKING_AREA(waMotorThread, 64);
-THD_FUNCTION(MotorThread, arg) {
-    UNUSED(arg);
-    while (1) { 
-        if (motor_speed < 0) {
-            motor_backward();
-            pwmEnableChannel(&PWMD3, MOTOR_PWM_CHANNEL, -motor_speed);
-        } else if(motor_speed > 0) {
-            motor_forward();
-            pwmEnableChannel(&PWMD3, MOTOR_PWM_CHANNEL, motor_speed);
-        } else {
-            motor_stop();
-        }
-        chThdSleepMilliseconds(100);
-    }
-    chRegSetThreadName("motor");
-    chThdSleepMilliseconds(100);
-}
-
 THD_WORKING_AREA(waCommanderThread, 128);
 THD_FUNCTION(CommanderThread, arg) {
-    UNUSED(arg);
+	(void)arg;
 
     thread_t *serialp;
     message_data_t *messagep;
@@ -89,13 +70,13 @@ THD_FUNCTION(CommanderThread, arg) {
     while (1) {
         serialp = chMsgWait();
         messagep = (message_data_t *)chMsgGet(serialp);
-        
+
         cmd = messagep->operation;
 
         command_id = cmd & COMMAND_ID_MASK;
         rw_bit = ((cmd >> OPERATION_BIT_LENGTH) & 1) + 1;
         data_length = cmd >> (OPERATION_BIT_LENGTH + RW_BIT);
-        
+
         if (rw_bit == PROCESS_DATA_FROM_MASTER) {
             for (i = 0; i < data_length; i++) {
                 data_buff[i] = messagep->data[i];
@@ -112,24 +93,13 @@ THD_FUNCTION(CommanderThread, arg) {
     }
     chRegSetThreadName("commander");
     chThdSleepMilliseconds(100);
-}
+}*/
 
-static PWMConfig pwmcfg = {
-    22000, // 22kHz frequency
-    1000, // 1000 ticks - period lenght
-    NULL,
-    {
-        {PWM_OUTPUT_DISABLED, NULL},
-        {PWM_OUTPUT_DISABLED, NULL},
-        {PWM_OUTPUT_DISABLED, NULL},
-        {PWM_OUTPUT_ACTIVE_HIGH, NULL}
-    },
-    0,
-    0
-};
-
-
+<<<<<<< HEAD
+int main(void) {
+=======
 int main(void) {    
+>>>>>>> 35332c5802f1ee8be6816247d7e9dd8f43e2613f
     halInit();
     chSysInit();
 
@@ -138,30 +108,28 @@ int main(void) {
      */
 
     communication_init();
+<<<<<<< HEAD
 
-    /*
-     * PWM setup
-     */  
-
-    pwmInit();
-    pwmStart(&PWMD3, &pwmcfg);
-
-    palSetPadMode(MOTOR_IN_GPIO, MOTOR_IN_1, PAL_MODE_OUTPUT_PUSHPULL);
-    palSetPadMode(MOTOR_IN_GPIO, MOTOR_IN_2, PAL_MODE_OUTPUT_PUSHPULL);
+=======
     
-    palSetPadMode(MOTOR_ENABLE_GPIO, MOTOR_ENABLE, PAL_MODE_ALTERNATE(1));
-    
+>>>>>>> 35332c5802f1ee8be6816247d7e9dd8f43e2613f
     /*
      * Threads setup
      */
 
-    chThdCreateStatic(waMotorThread, sizeof(waMotorThread),
-                      NORMALPRIO, MotorThread, NULL);
+<<<<<<< HEAD
+    //commanderp = chThdCreateStatic(waCommanderThread, sizeof(waCommanderThread),
+    //                               NORMALPRIO, CommanderThread, NULL);
 
+    communication_thread();
+=======
     commanderp = chThdCreateStatic(waCommanderThread, sizeof(waCommanderThread),
                                    NORMALPRIO, CommanderThread, NULL);
+>>>>>>> 35332c5802f1ee8be6816247d7e9dd8f43e2613f
 
-    communication_thread(commanderp);
+    motor_thread_init();
+
+    motorp = motor_thread_init();
 
     while (1) {
         chThdSleepMilliseconds(100);

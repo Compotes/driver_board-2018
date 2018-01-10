@@ -10,7 +10,7 @@ endif
 
 # C specific options here (added to USE_OPT).
 ifeq ($(USE_COPT),)
-  USE_COPT = 
+  USE_COPT =
 endif
 
 # C++ specific options here (added to USE_OPT).
@@ -25,7 +25,7 @@ endif
 
 # Linker extra options here.
 ifeq ($(USE_LDOPT),)
-  USE_LDOPT = 
+  USE_LDOPT =
 endif
 
 # Enable this if you want link time optimizations (LTO)
@@ -81,12 +81,14 @@ endif
 PROJECT = driver_board
 
 # Imported source files and paths
+CHIBIOS = $(CHIBIOS_3_0_2)
+DRIVER_BOARD = /home/krtko/robocup_2018/driver_board/boards/DRIVER_BOARD
 # Startup files.
 include $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/mk/startup_stm32f0xx.mk
 # HAL-OSAL files (optional).
 include $(CHIBIOS)/os/hal/hal.mk
 include $(CHIBIOS)/os/hal/ports/STM32/STM32F0xx/platform.mk
-include $(DRIVER_BOARD)/board.mk
+include /driver/board.mk
 include $(CHIBIOS)/os/hal/osal/rt/osal.mk
 # RTOS files (optional).
 include $(CHIBIOS)/os/rt/rt.mk
@@ -109,6 +111,7 @@ CSRC = $(STARTUPSRC) \
        $(TESTSRC) \
        $(CHIBIOS)/os/hal/lib/streams/chprintf.c \
 	   communication.c \
+	   motor.c \
        main.c
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global
